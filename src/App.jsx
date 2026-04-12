@@ -1,113 +1,89 @@
-import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import "./App.css";
 
 export default function App() {
   const canvasRef = useRef(null);
-  const mouse = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
+    let stars = [];
+    let animationFrameId;
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    function init() {
+  const dpr = window.devicePixelRatio || 1;
 
-    const stars = [];
-    const shootingStars = [];
+  const width = Math.ceil(window.innerWidth);
+  const height = Math.ceil(window.innerHeight);
 
-    window.addEventListener("mousemove", (e) => {
-      mouse.current.x = e.clientX;
-      mouse.current.y = e.clientY;
-    });
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
 
-    // ⭐ stars
-    for (let i = 0; i < 140; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2,
-        speed: Math.random() * 0.5,
-      });
-    }
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
 
-    // 💫 shooting stars
-    function createShootingStar() {
-      shootingStars.push({
-        x: Math.random() * canvas.width,
-        y: 0,
-        length: Math.random() * 80 + 50,
-        speed: Math.random() * 2 + 1.5, // ✅ slower
-      });
-    }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-    setInterval(createShootingStar, 4000); // ✅ less frequent
+  stars = Array.from({ length: 180 }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    size: Math.random() * 1.5,
+    vx: (Math.random() - 0.5) * 0.3,
+    vy: (Math.random() - 0.5) * 0.3,
+  }));
+}
+   const width = Math.ceil(window.innerWidth);
+const height = Math.ceil(window.innerHeight);
 
-    function animate() {
       ctx.fillStyle = "#020617";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, width, height);
 
-      // 🌌 nebula glow
       const gradient = ctx.createRadialGradient(
-        canvas.width / 2,
-        canvas.height / 2,
-        100,
-        canvas.width / 2,
-        canvas.height / 2,
-        700
+        width / 2,
+        height / 2,
+        0,
+        width / 2,
+        height / 2,
+        Math.max(width, height)
       );
-      gradient.addColorStop(0, "rgba(99,102,241,0.2)");
-      gradient.addColorStop(1, "rgba(168,85,247,0.15)");
+
+      gradient.addColorStop(0, "rgba(99,102,241,0.25)");
+      gradient.addColorStop(0.5, "rgba(139,92,246,0.15)");
+      gradient.addColorStop(1, "transparent");
 
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, width, height);
 
-      // ⭐ stars (cursor interaction)
       stars.forEach((s) => {
-        const dx = mouse.current.x - s.x;
-        const dy = mouse.current.y - s.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        s.x += s.vx;
+        s.y += s.vy;
 
-        if (distance < 150) {
-          s.x -= dx * 0.01;
-          s.y -= dy * 0.01;
-        }
+        if (s.x < 0 || s.x > width) s.vx *= -1;
+        if (s.y < 0 || s.y > height) s.vy *= -1;
 
-        s.y += s.speed;
-        if (s.y > canvas.height) s.y = 0;
-
-        ctx.fillStyle = "white";
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.fillStyle = "white";
         ctx.fill();
       });
 
-      // 💫 shooting stars
-      shootingStars.forEach((s, index) => {
-        ctx.strokeStyle = "rgba(255,255,255,0.8)";
-        ctx.lineWidth = 1.5;
-
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.length, s.y + s.length);
-        ctx.stroke();
-
-        s.x -= s.speed;
-        s.y += s.speed;
-
-        if (s.y > canvas.height) {
-          shootingStars.splice(index, 1);
-        }
-      });
-
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
     }
 
+    function handleResize() {
+      init();
+    }
+
+    init();
     animate();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
@@ -115,75 +91,91 @@ export default function App() {
       <canvas ref={canvasRef} style={styles.canvas}></canvas>
 
       {/* HERO */}
-      <Section>
-        <h1 style={styles.title}>Jai Krishna V</h1>
-        <p style={styles.subtitle}>
-          Creative IT Professional | PMO | Content Creator
-        </p>
-        <p style={styles.tagline}>
-          Bridging execution with creativity
-        </p>
-      </Section>
+      <section style={styles.heroSection}>
+        <img src="/profile.png" style={styles.heroImage} />
+        <div>
+          <h1 style={styles.title}>Jai Krishna V</h1>
+          <p style={styles.subtitle}>
+            PMO | Creative Professional | Content Creator
+          </p>
+        </div>
+      </section>
 
       {/* ABOUT */}
       <Section>
         <h2 style={styles.heading}>About Me</h2>
-
         <p style={styles.text}>
-          I’m Jai Krishna V, a detail-oriented IT professional working as a PMO,
-          with a strong passion for creativity, storytelling, and digital experiences.
+          I am a PMO professional focused on execution, coordination, and delivering structured outcomes.
         </p>
-
         <p style={styles.text}>
-          With a balance of structure and creativity, I specialize in managing workflows,
-          organizing ideas, and delivering meaningful outcomes. Beyond my professional role,
-          I actively create content—capturing travel moments, food experiences, and visual stories that reflect my perspective.
+          Skilled in photo editing, video editing, digital creative design and Customer support. 
         </p>
-
         <p style={styles.text}>
-          I enjoy blending strategy with creativity, whether it’s designing presentations,
-          building engaging digital experiences, or crafting stories that connect with people.
-          I’m also exploring personal ventures, including content creation, storytelling, and building digital products.
+          Passionate about creating engaging visuals and improving user experiences.
         </p>
-
         <p style={styles.text}>
-          I believe in continuous growth, learning, and turning ideas into impactful experiences.
+          I enjoy combining creativity with technology to build impactful content.
+        </p>
+        <p style={styles.text}>
+          I have worked on logo animation projects including Mocavo Coffee.
+        </p>
+        <p style={styles.text}>
+          Interested in handling customer email support with a professional approach.
         </p>
       </Section>
 
-      {/* EXPERIENCE */}
+      {/* CLIENTS */}
       <Section>
-        <h2 style={styles.heading}>Experience</h2>
+        <h2 style={styles.heading}>Clients</h2>
+
+        <div style={styles.logoCenter}>
+          <img src="/mocavo.jpeg" style={styles.logo} />
+        </div>
+
         <p style={styles.text}>
-          Managing project execution, stakeholder communication, and ensuring delivery across teams.
+          Worked on branding and logo animation projects including Mocavo Coffee and other creative assignments.
         </p>
       </Section>
 
-      {/* WORK */}
+      {/* FEATURED */}
       <Section>
         <h2 style={styles.heading}>Featured Work</h2>
 
-        <div style={styles.videoGrid}>
-          <video src="/video1.mp4" controls style={styles.video} />
+        <div style={styles.videoColumn}>
+          <div>
+            <p style={styles.smallHeading}>Mocavo Coffee Logo Animation</p>
+            <video src="/Client%20video.mp4" controls style={styles.video} />
+          </div>
+
           <video src="/video2.mp4" controls style={styles.video} />
         </div>
-      </Section>
-
-      {/* PHOTO */}
-      <Section>
-        <h2 style={styles.heading}>Photo Editing</h2>
 
         <div style={styles.beforeAfter}>
           <div>
-            <p style={styles.label}>Before</p>
+            <p style={styles.smallHeading}>Before</p>
             <img src="/before1.jpeg" style={styles.media} />
           </div>
-
           <div>
-            <p style={styles.label}>After</p>
+            <p style={styles.smallHeading}>After</p>
             <img src="/after1.jpeg" style={styles.media} />
           </div>
         </div>
+      </Section>
+
+      {/* AVAILABILITY */}
+      <Section>
+        <h2 style={styles.heading}>Availability</h2>
+        <p style={styles.text}>
+          Available on weekdays after 7 PM IST and weekends (flexible).
+          Available on all weekends.
+        </p>
+      </Section>
+
+      {/* CONNECT */}
+      <Section>
+        <h2 style={styles.heading}>Connect With Me</h2>
+        <p style={styles.text}>📧 jaikrishnavasu@gmail.com</p>
+        <p style={styles.text}>📸 Instagram: wander_._soul_</p>
       </Section>
     </div>
   );
@@ -191,110 +183,102 @@ export default function App() {
 
 /* SECTION */
 function Section({ children }) {
-  return (
-    <section style={styles.section}>
-      <motion.div
-        initial={{ opacity: 0, y: 80 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        style={styles.inner}
-      >
-        {children}
-      </motion.div>
-    </section>
-  );
+  return <section style={styles.section}>{children}</section>;
 }
 
 /* STYLES */
 const styles = {
   container: {
     fontFamily: "Poppins, sans-serif",
+    color: "#fff",
+    width: "100%",
+    overflowX: "hidden",
     background: "#020617",
-    color: "#ffffff",
-    scrollSnapType: "y mandatory",
-    overflowY: "scroll",
-    height: "100vh",
   },
 
   canvas: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    zIndex: 0,
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  zIndex: -1,
+  display: "block",
+},
+  heroSection: {
+    display: "flex",
+    alignItems: "center",
+    gap: "40px",
+    minHeight: "100vh",
+    paddingLeft: "10%",
+  },
+
+  heroImage: {
+    width: "180px",
+  },
+
+  title: {
+    fontSize: "3rem",
+    color: "#ffffff",
+  },
+
+  subtitle: {
+    color: "#cbd5f5",
   },
 
   section: {
     minHeight: "100vh",
     display: "flex",
-    alignItems: "center",
+    flexDirection: "column",
     justifyContent: "center",
-    scrollSnapAlign: "start",
-    position: "relative",
-    zIndex: 1,
-    padding: "80px 20px",
-  },
-
-  inner: {
-    maxWidth: "800px",
+    alignItems: "center",
     textAlign: "center",
   },
 
-  title: {
-    fontSize: "clamp(3rem, 6vw, 5rem)",
-    fontWeight: "700",
-    color: "#ffffff",
+  heading: {
+    color: "#cbd5f5",
+    marginBottom: "15px",
   },
 
-  subtitle: {
-    color: "#e2e8f0",
-  },
-
-  tagline: {
+  smallHeading: {
     color: "#cbd5f5",
   },
 
-  heading: {
-    fontSize: "2.5rem",
-    marginBottom: "20px",
-    color: "#f8fafc",
-  },
-
   text: {
+    maxWidth: "600px",
     color: "#e2e8f0",
-    lineHeight: "1.8",
-    marginBottom: "20px",
   },
 
-  videoGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(2, 1fr)",
-    gap: "40px",
+  videoColumn: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "25px",
+    marginTop: "20px",
   },
 
   video: {
-    width: "100%",
-    height: "350px",
-    borderRadius: "15px",
+    width: "300px",
+    borderRadius: "10px",
   },
 
   beforeAfter: {
     display: "flex",
-    gap: "40px",
-    justifyContent: "center",
-    flexWrap: "wrap",
+    gap: "20px",
+    marginTop: "20px",
   },
 
   media: {
-    width: "300px",
-    height: "250px",
+    width: "170px",
     borderRadius: "10px",
   },
 
-  label: {
-    color: "#e2e8f0",
-    marginBottom: "10px",
+  logoCenter: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "30px",
+  },
+
+  logo: {
+    width: "120px",
   },
 };
