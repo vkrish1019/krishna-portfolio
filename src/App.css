@@ -46,3 +46,15 @@ video:hover {
 img:hover {
   transform: translateY(-3px);
 }
+.fade-in {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

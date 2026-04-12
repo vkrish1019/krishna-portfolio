@@ -13,7 +13,6 @@ export default function App() {
 
     function init() {
       const dpr = window.devicePixelRatio || 1;
-
       const width = Math.ceil(window.innerWidth);
       const height = Math.ceil(window.innerHeight);
 
@@ -92,6 +91,14 @@ export default function App() {
     <div style={styles.container}>
       <canvas ref={canvasRef} style={styles.canvas}></canvas>
 
+      {/* NAVBAR */}
+      <nav style={styles.nav}>
+        <a href="#">Home</a>
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
       {/* HERO */}
       <section style={styles.heroSection}>
         <img src="/profile.png" style={styles.heroImage} />
@@ -100,92 +107,91 @@ export default function App() {
           <p style={styles.subtitle}>
             PMO | Creative Professional | Content Creator
           </p>
+          <p style={styles.heroTagline}>
+            Helping brands grow through creative design and structured execution.
+          </p>
         </div>
       </section>
 
       {/* ABOUT */}
-      <Section>
+      <Section id="about">
         <h2 style={styles.heading}>About Me</h2>
+
         <p style={styles.text}>
-          I am a PMO professional focused on execution, coordination, and delivering structured outcomes.
+          I am a PMO professional specializing in execution, coordination, and delivering structured outcomes across projects.
         </p>
+
         <p style={styles.text}>
-          Skilled in photo editing, video editing, digital creative design and Customer support.
+          Alongside my core role, I work on photo editing, video editing, digital creatives, and branding visuals.
         </p>
+
         <p style={styles.text}>
-          Passionate about creating engaging visuals and improving user experiences.
+          I focus on combining creativity with strategy to create engaging and impactful content.
         </p>
+
         <p style={styles.text}>
-          I enjoy combining creativity with technology to build impactful content.
+          I have contributed to projects including logo animation for Mocavo Coffee.
         </p>
+
         <p style={styles.text}>
-          I have worked on logo animation projects including Mocavo Coffee.
-        </p>
-        <p style={styles.text}>
-          Interested in handling customer email support with a professional approach.
+          I am also interested in customer email support, ensuring clear communication and professional handling of client interactions.
         </p>
       </Section>
 
       {/* CLIENTS */}
       <Section>
         <h2 style={styles.heading}>Clients</h2>
-
         <div style={styles.logoCenter}>
           <img src="/mocavo.jpeg" style={styles.logo} />
         </div>
-
-        <p style={styles.text}>
-          Worked on branding and logo animation projects including Mocavo Coffee and other creative assignments.
-        </p>
       </Section>
 
-      {/* FEATURED */}
-      <Section>
+      {/* WORK */}
+      <Section id="work">
         <h2 style={styles.heading}>Featured Work</h2>
 
-        <div style={styles.videoColumn}>
-          <div>
-            <p style={styles.smallHeading}>Mocavo Coffee Logo Animation</p>
-            <video src="/Client%20video.mp4" controls style={styles.video} />
-          </div>
-
-          <video src="/video2.mp4" controls style={styles.video} />
-        </div>
-
-        <div style={styles.beforeAfter}>
-          <div>
-            <p style={styles.smallHeading}>Before</p>
-            <img src="/before1.jpeg" style={styles.media} />
-          </div>
-          <div>
-            <p style={styles.smallHeading}>After</p>
-            <img src="/after1.jpeg" style={styles.media} />
-          </div>
-        </div>
-      </Section>
-
-      {/* AVAILABILITY */}
-      <Section>
-        <h2 style={styles.heading}>Availability</h2>
-        <p style={styles.text}>
-          Available on weekdays after 7 PM IST and weekends (flexible).
-          Available on all weekends.
+        <p style={styles.projectDesc}>
+          Objective: Create a clean and modern logo animation for Mocavo Coffee.
         </p>
+
+        <p style={styles.projectDesc}>
+          Role: Concept development, animation, and final delivery.
+        </p>
+
+        <p style={styles.projectDesc}>
+          Outcome: Delivered a smooth, engaging brand animation suitable for digital platforms.
+        </p>
+
+        <video src="/Client%20video.mp4" controls style={styles.video} />
       </Section>
 
-      {/* CONNECT */}
-      <Section>
+      {/* CONTACT */}
+      <Section id="contact">
         <h2 style={styles.heading}>Connect With Me</h2>
-        <p style={styles.text}>📧 jaikrishnavasu@gmail.com</p>
-        <p style={styles.text}>📸 Instagram: wander_._soul_</p>
+
+        <a href="mailto:jaikrishnavasu@gmail.com" style={styles.link}>
+          📧 Email Me
+        </a>
+
+        <a
+          href="https://instagram.com/wander_._soul_"
+          target="_blank"
+          style={styles.link}
+        >
+          📸 Instagram
+        </a>
       </Section>
     </div>
   );
 }
 
 /* SECTION */
-function Section({ children }) {
-  return <section style={styles.section}>{children}</section>;
+function Section({ children, id }) {
+  return (
+    <section id={id} style={styles.section} className="fade-in">
+      {children}
+    </section>
+  );
 }
 
 /* STYLES */
@@ -206,6 +212,19 @@ const styles = {
     height: "100%",
     zIndex: -1,
     display: "block",
+  },
+
+  nav: {
+    position: "fixed",
+    top: 0,
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    gap: "30px",
+    padding: "15px",
+    background: "rgba(2,6,23,0.6)",
+    backdropFilter: "blur(10px)",
+    zIndex: 10,
   },
 
   heroSection: {
@@ -229,6 +248,12 @@ const styles = {
     color: "#cbd5f5",
   },
 
+  heroTagline: {
+    marginTop: "10px",
+    color: "#94a3b8",
+    maxWidth: "400px",
+  },
+
   section: {
     minHeight: "100vh",
     display: "flex",
@@ -243,36 +268,27 @@ const styles = {
     marginBottom: "15px",
   },
 
-  smallHeading: {
-    color: "#cbd5f5",
-  },
-
   text: {
     maxWidth: "600px",
     color: "#e2e8f0",
   },
 
-  videoColumn: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "25px",
-    marginTop: "20px",
+  projectDesc: {
+    color: "#94a3b8",
+    fontSize: "14px",
+    maxWidth: "500px",
   },
 
   video: {
     width: "300px",
     borderRadius: "10px",
-  },
-
-  beforeAfter: {
-    display: "flex",
-    gap: "20px",
     marginTop: "20px",
   },
 
-  media: {
-    width: "170px",
-    borderRadius: "10px",
+  link: {
+    color: "#cbd5f5",
+    textDecoration: "none",
+    marginTop: "10px",
   },
 
   logoCenter: {
