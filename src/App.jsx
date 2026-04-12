@@ -12,29 +12,31 @@ export default function App() {
     let animationFrameId;
 
     function init() {
-  const dpr = window.devicePixelRatio || 1;
+      const dpr = window.devicePixelRatio || 1;
 
-  const width = Math.ceil(window.innerWidth);
-  const height = Math.ceil(window.innerHeight);
+      const width = Math.ceil(window.innerWidth);
+      const height = Math.ceil(window.innerHeight);
 
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
 
-  canvas.style.width = width + "px";
-  canvas.style.height = height + "px";
+      canvas.style.width = width + "px";
+      canvas.style.height = height + "px";
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-  stars = Array.from({ length: 180 }, () => ({
-    x: Math.random() * width,
-    y: Math.random() * height,
-    size: Math.random() * 1.5,
-    vx: (Math.random() - 0.5) * 0.3,
-    vy: (Math.random() - 0.5) * 0.3,
-  }));
-}
-   const width = Math.ceil(window.innerWidth);
-const height = Math.ceil(window.innerHeight);
+      stars = Array.from({ length: 180 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: Math.random() * 1.5,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+      }));
+    }
+
+    function animate() {
+      const width = Math.ceil(window.innerWidth);
+      const height = Math.ceil(window.innerHeight);
 
       ctx.fillStyle = "#020617";
       ctx.fillRect(0, 0, width, height);
@@ -108,7 +110,7 @@ const height = Math.ceil(window.innerHeight);
           I am a PMO professional focused on execution, coordination, and delivering structured outcomes.
         </p>
         <p style={styles.text}>
-          Skilled in photo editing, video editing, digital creative design and Customer support. 
+          Skilled in photo editing, video editing, digital creative design and Customer support.
         </p>
         <p style={styles.text}>
           Passionate about creating engaging visuals and improving user experiences.
@@ -197,14 +199,15 @@ const styles = {
   },
 
   canvas: {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-  zIndex: -1,
-  display: "block",
-},
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    zIndex: -1,
+    display: "block",
+  },
+
   heroSection: {
     display: "flex",
     alignItems: "center",
